@@ -1,6 +1,7 @@
 import express, { Application } from 'express';
 import morgan from 'morgan';
 import dotenv from 'dotenv';
+import connectToMongoDB from './db/connect';
 
 // Routes
 
@@ -14,6 +15,8 @@ import {
 } from './controllers/error.controller';
 
 dotenv.config({ path: './config/.env' });
+
+connectToMongoDB();
 
 const app: Application = express();
 
