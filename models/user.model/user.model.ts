@@ -22,7 +22,7 @@ const userSchema = new Schema<IUser>({
 		trim: true,
 		required: [true, 'Confirm a password!'],
 		validate: {
-			validator: function (this, password: string) {
+			validator: function (this: IUser, password: string) {
 				return this.password === password;
 			},
 			message: 'Passwords must be the same!',

@@ -20,6 +20,8 @@ connectToMongoDB();
 
 const app: Application = express();
 
+app.use(express.json());
+
 if (process.env.SERVER_MODE === 'development') {
 	app.use(morgan('dev'));
 }
