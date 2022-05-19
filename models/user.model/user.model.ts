@@ -1,5 +1,6 @@
 import { Schema, Model, model } from 'mongoose';
 import validator from 'validator';
+import bcrypt from 'bcrypt';
 import IUser from './user.model.interface';
 
 const userSchema = new Schema<IUser>({
@@ -28,6 +29,14 @@ const userSchema = new Schema<IUser>({
 			message: 'Passwords must be the same!',
 		},
 	},
+});
+
+userSchema.pre<IUser>('save', async function (next) {
+	if (!this.isModified('password')) return next();
+
+	this.password = await bcrypt.hash(this.password, 12);
+	this.passwordConfirm = undefined;
+	next();
 });
 
 const User: Model<IUser> = model('User', userSchema);
