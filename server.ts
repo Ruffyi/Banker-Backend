@@ -6,6 +6,13 @@ import dotenv from 'dotenv';
 
 import userRouter from './routes/user.routes';
 
+// Middlewares
+
+import {
+	globalErrorMiddleware,
+	notFound,
+} from './controllers/error.controller';
+
 dotenv.config({ path: './config/.env' });
 
 const app: Application = express();
@@ -17,6 +24,10 @@ if (process.env.SERVER_MODE === 'development') {
 const SERVER_PORT = process.env.SERVER_PORT || 5000;
 
 app.use('/api/v1/users', userRouter);
+
+app.all('*', notFound);
+
+app.use(globalErrorMiddleware);
 
 app.listen(SERVER_PORT, () => {
 	console.log(`Server is listening at port : {${SERVER_PORT}}`);
