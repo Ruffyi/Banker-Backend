@@ -45,6 +45,8 @@ const globalErrorMiddleware = (
 	if (process.env.SERVER_MODE === 'production') {
 		sendErrorProd(err, res);
 	}
+
+	console.log(err);
 };
 
 export { globalErrorMiddleware, notFound };

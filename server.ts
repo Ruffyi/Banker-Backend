@@ -2,6 +2,7 @@ import express, { Application } from 'express';
 import morgan from 'morgan';
 import dotenv from 'dotenv';
 import connectToMongoDB from './db/connect';
+import cors from 'cors';
 
 // Routes
 
@@ -21,6 +22,7 @@ connectToMongoDB();
 const app: Application = express();
 
 app.use(express.json());
+app.use(cors());
 
 if (process.env.SERVER_MODE === 'development') {
 	app.use(morgan('dev'));
