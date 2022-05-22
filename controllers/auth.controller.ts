@@ -9,6 +9,12 @@ import dotenv from 'dotenv';
 
 dotenv.config({ path: './../config/.env' });
 
+type TJWTToken = {
+	id: string;
+	iat: number;
+	exp: number;
+};
+
 const signToken = (id: string) => {
 	return JWT.sign({ id }, process.env.JWT_SECRET as string, {
 		expiresIn: process.env.JWT_EXPIRES_IN,
@@ -84,4 +90,36 @@ const login = asyncHandler(
 	}
 );
 
-export { signup, login };
+const protect = asyncHandler(
+	async (req: Request, res: Response, next: NextFunction) => {
+		const { authorization } = req.headers;
+		let token;
+		if (authorization && authorization.startsWith('Bearer')) {
+			token = authorization.split(' ')[1];
+		}
+
+		if (!token) {
+			return next(new CustomError('You are not logged in!', 401));
+		}
+
+		const validToken = JWT.verify(
+			token,
+			process.env.JWT_SECRET as string
+		) as TJWTToken;
+
+		const user = await User.findById(validToken.id);
+
+		if (!user) {
+			return next(
+				new CustomError(
+					'The user belonging to this token does no longer exist.',
+					401
+				)
+			);
+		}
+		req.user = user;
+		next();
+	}
+);
+
+export { signup, login, protect };
