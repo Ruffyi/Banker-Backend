@@ -82,6 +82,8 @@ const login = asyncHandler(
 			user.password
 		);
 
+		console.log(correctlyPassword);
+
 		if (!correctlyPassword) {
 			return next(new CustomError('Incorrect email or password', 401));
 		}

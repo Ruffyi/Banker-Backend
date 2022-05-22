@@ -8,8 +8,6 @@ dotenv.config({ path: './../config/.env' });
 const sendErrorDev = (err: CustomError, res: Response) => {
 	const { message, status = 'fail', statusCode = 500, stack } = err;
 
-	console.log(err);
-
 	res.status(statusCode).send({
 		error: {
 			message,
@@ -65,11 +63,11 @@ const globalErrorMiddleware = (
 	if (err.name === 'ValidationError') error = handleValidationErrorDB(error);
 
 	if (process.env.SERVER_MODE === 'development') {
-		sendErrorDev(error, res);
+		sendErrorDev({ ...error, message: err.message }, res);
 	}
 
 	if (process.env.SERVER_MODE === 'production') {
-		sendErrorProd(error, res);
+		sendErrorProd({ ...error, message: err.message }, res);
 	}
 };
 
