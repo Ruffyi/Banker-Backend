@@ -51,12 +51,13 @@ const createAndSendToken = (user: IUser, statusCode: number, res: Response) => {
 
 const signup = asyncHandler(
 	async (req: Request, res: Response, next: NextFunction) => {
-		const { email, password, passwordConfirm } = req.body;
+		const { email, password, passwordConfirm, bankAccount } = req.body;
 
 		const newUser = await User.create({
 			email,
 			password,
 			passwordConfirm,
+			bankAccount,
 		});
 
 		createAndSendToken(newUser, 201, res);

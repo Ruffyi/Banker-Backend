@@ -2,6 +2,7 @@ import { Schema, Model, model } from 'mongoose';
 import validator from 'validator';
 import bcrypt from 'bcrypt';
 import IUser from './user.model.interface';
+import BankAccount from '../account.bank.model/account.bank.model';
 
 const userSchema = new Schema<IUser>({
 	email: {
@@ -29,6 +30,17 @@ const userSchema = new Schema<IUser>({
 			message: 'Passwords must be the same!',
 		},
 	},
+	bankAccount: {
+		type: Schema.Types.ObjectId,
+		ref: 'bankAccount',
+	},
+});
+
+userSchema.pre<IUser>(/^find/, function () {
+	this.populate({
+		path: 'bankAccount',
+		model: BankAccount,
+	});
 });
 
 userSchema.pre<IUser>('save', async function (next) {
